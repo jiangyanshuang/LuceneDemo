@@ -2,6 +2,9 @@ package com.itheima;
 
 import com.sun.glass.ui.Size;
 import org.apache.commons.io.FileUtils;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -10,6 +13,7 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.packed.DirectReader;
+import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.awt.*;
 import java.io.File;
@@ -36,6 +40,14 @@ public class Demo {
     //8.打印文档中的内容
     //9.关闭indexreader对象
     //备注:创建读索引对象,通过读索引对象创建索引搜索对象,创建query对象,索引搜索对象通过query对象获得topdocs对象
+
+    //=====测试标准分析器 就在indexWriterConfig构造器内部默认创建的=====
+    //1.创建一个Anolyzer对象,standardAnalyzer对象
+    //2.使用分析器对象的tokenstream方法获得一个tokenstream对象
+    //3.向tokenstream对象中设置一个引用,相当于一个指针
+    //4.调用tokenstream对象的rest方法,如果不调用抛异常
+    //5.使用while循环遍历tokenstream对象
+    //6.关闭tokenstream对象
     //==============美丽的分割线==================
 
     String database = "C:\\Users\\江小白\\Desktop\\index\\data";
@@ -110,11 +122,102 @@ public class Demo {
         //9.关闭indexreader对象
         ir.close();
     }
+
+    public void testTokenStream() throws IOException {
+        //1）创建一个Analyzer对象，StandardAnalyzer对象
+//        Analyzer analyzer = new StandardAnalyzer();
+        Analyzer analyzer = new IKAnalyzer();
+        //2）使用分析器对象的tokenStream方法获得一个TokenStream对象
+        TokenStream tokenStream = analyzer.tokenStream("", "江小白2017年12月14日 - 传智播客Lucene概述公安局Lucene是一款高性能的、可扩展的信息检索(IR)工具库。信息检索是指文档搜索、文档内信息搜索或者文档相关的元数据搜索等操作。");
+        //3）向TokenStream对象中设置一个引用，相当于数一个指针
+        CharTermAttribute charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
+        //4）调用TokenStream对象的rest方法。如果不调用抛异常
+        tokenStream.reset();
+        //5）使用while循环遍历TokenStream对象
+        while(tokenStream.incrementToken()) {
+            System.out.println(charTermAttribute.toString());
+        }
+        //6）关闭TokenStream对象
+        tokenStream.close();
+    }
+
+
     public static void main(String[] args) throws Exception {
 //        new Demo().create();
-        new Demo().searchIndex();
+//        new Demo().searchIndex();
+        new Demo().testTokenStream();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
